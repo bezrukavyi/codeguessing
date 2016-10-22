@@ -5,13 +5,13 @@ class Game
   MAX_HINT = 2
   MAX_ATTEMPTS = 5
 
-  def initialize
+  def initialize(data = [])
     @secret_code = ''
     4.times { @secret_code += rand(1..6).to_s }
     @attempts = MAX_ATTEMPTS
     @hint_count = MAX_HINT
     @state = ''
-    @scores = load
+    @scores = data || []
   end
 
   def guess(code)
@@ -43,21 +43,11 @@ class Game
     res
   end
 
-  def load
-    path = File.join(File.dirname(__FILE__), 'scores.yml')
-    if File.exist?(path)
-      YAML.load(File.open(path))
-    else
-      []
-    end
-  end
-
-  def save(name = 'Anonim')
+  def save(path, name = 'Anonim')
     return false if state != true
     score = cur_score
     score[:name] = name
     @scores << score
-    path = File.join(File.dirname(__FILE__), 'scores.yml')
     File.new(path, 'w') unless File.exist?(path)
     File.open(path, "r+") do |f|
       f.write(@scores.to_yaml)

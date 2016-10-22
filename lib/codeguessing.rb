@@ -6,7 +6,9 @@ require 'colorize'
 class Codeguessing
 
   def initialize(again = false)
-    @game = Game.new
+    @path = File.join(File.dirname(__FILE__), 'scores.yml')
+    @data = load(@path)
+    @game = Game.new(@data)
     return start if again
     knowing
   end
@@ -48,7 +50,7 @@ class Codeguessing
     puts 'Do you want save result? (Y/N)'
     return puts 'Goodbie!' unless confirm?
     puts 'Write your name'
-    @game.save(gets.chomp)
+    @game.save(@path, gets.chomp)
     again?
   end
 
@@ -78,4 +80,9 @@ class Codeguessing
     string.chars { |w| color_s += w == '+' ? '+'.green : '-'.red }
     color_s
   end
+
+  def load(path)
+    YAML.load(File.open(path)) if File.exist?(path)
+  end
+
 end
