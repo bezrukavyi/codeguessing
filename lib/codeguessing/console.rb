@@ -24,8 +24,8 @@ module Codeguessing
 
     def start
       puts "Attempt(s): #{@game.attempts} | Hint(s): #{@game.hint_count}"
-      return loose if @game.state == false
-      return win if @game.state == true
+      return loose if @game.state == 'false'
+      return win if @game.state == 'true'
 
       action = gets.chomp
       if action == 'hint'

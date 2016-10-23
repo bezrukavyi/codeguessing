@@ -71,11 +71,11 @@ module Codeguessing
     end
 
     def win
-      @state = true
+      @state = 'true'
     end
 
     def loose
-      @state = false
+      @state = 'false'
     end
 
     def random
