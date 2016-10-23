@@ -1,6 +1,6 @@
 module Codeguessing
   class Console
-    def initialize(again = false, opt)
+    def initialize(again = false, opt = {})
       @path = File.join(File.dirname(__FILE__), 'scores.yml')
       @scores = load(@path)
       @game = Game.new(opt)
@@ -82,7 +82,7 @@ module Codeguessing
 
     def save(name = 'Anonim')
       return if @game.state != true
-      @scores << @game.cur_score
+      @scores << @game.cur_score(name)
       File.new(@path, 'w') unless File.exist?(@path)
       File.open(@path, "r+") do |f|
         f.write(@scores.to_yaml)

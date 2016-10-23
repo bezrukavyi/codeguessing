@@ -1,6 +1,6 @@
 module Codeguessing
   class Game
-    attr_reader :result, :attempts, :hint_count, :state
+    attr_reader :attempts, :hint_count, :state
     attr_accessor :secret_code
 
     MAX_HINT = 2
@@ -10,7 +10,7 @@ module Codeguessing
       @secret_code = opt[:secret_code] || random
       @attempts = opt[:attempts] || MAX_ATTEMPTS
       @hint_count = opt[:hint_count] || MAX_HINT
-      @state = ''
+      @state = opt[:state] || ''
     end
 
     def guess(code)
@@ -49,9 +49,6 @@ module Codeguessing
         new_k = k.to_s.gsub('@','').to_sym
         hash[new_k] = self.instance_variable_get(k)
       end
-      hash.delete(:scores)
-      hash.delete(:result)
-      hash.delete(:state)
       hash
     end
 
