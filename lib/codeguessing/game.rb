@@ -1,18 +1,16 @@
 module Codeguessing
   class Game
-    attr_reader :result, :attempts, :hint_count, :state, :scores
+    attr_reader :result, :attempts, :hint_count, :state
     attr_accessor :secret_code
 
     MAX_HINT = 2
     MAX_ATTEMPTS = 5
 
-    def initialize(data = [])
-      @secret_code = ''
-      4.times { @secret_code += rand(1..6).to_s }
-      @attempts = MAX_ATTEMPTS
-      @hint_count = MAX_HINT
+    def initialize(opt = {})
+      @secret_code = opt[:secret_code] || random
+      @attempts = opt[:attempts] || MAX_ATTEMPTS
+      @hint_count = opt[:hint_count] || MAX_HINT
       @state = ''
-      @scores = data || []
     end
 
     def guess(code)
@@ -44,20 +42,9 @@ module Codeguessing
       res
     end
 
-    def save(path, name = 'Anonim')
-      return false if state != true
-      score = cur_score
-      score[:name] = name
-      @scores << score
-      File.new(path, 'w') unless File.exist?(path)
-      File.open(path, "r+") do |f|
-        f.write(@scores.to_yaml)
-      end
-      @scores
-    end
-
-    def cur_score
+    def cur_score(name = 'Anonim')
       hash = {}
+      hash[:name] = name
       self.instance_variables.each do |k, v|
         new_k = k.to_s.gsub('@','').to_sym
         hash[new_k] = self.instance_variable_get(k)
@@ -92,6 +79,12 @@ module Codeguessing
 
     def loose
       @state = false
+    end
+
+    def random
+      code = ''
+      4.times { code += rand(1..6).to_s }
+      code
     end
 
   end
