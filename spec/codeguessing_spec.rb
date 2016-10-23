@@ -1,10 +1,10 @@
 require 'spec_helper'
 require 'yaml'
 
-describe Game do
+describe Codeguessing do
   let(:path) { File.absolute_path('lib/codeguessing/scores.yml') }
   let(:scores) { YAML.load(File.open(path)) }
-  let(:game) { Game.new(scores) }
+  let(:game) { Codeguessing::Game.new(scores) }
 
   describe '#start' do
     it 'saves secret code' do
@@ -48,11 +48,11 @@ describe Game do
 
   describe '#attempt' do
     it 'attempt limit' do
-      expect(game.attempts).to eq(Game::MAX_ATTEMPTS)
+      expect(game.attempts).to eq(Codeguessing::Game::MAX_ATTEMPTS)
     end
     it 'attempt balance' do
       2.times { game.guess('1235') }
-      expect(game.attempts).to eq(Game::MAX_ATTEMPTS - 2)
+      expect(game.attempts).to eq(Codeguessing::Game::MAX_ATTEMPTS - 2)
     end
     it 'when attempt ended' do
       11.times { game.guess('8765') }

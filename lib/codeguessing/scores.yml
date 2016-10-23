@@ -11,3 +11,11 @@
   :attempts: 5
   :hint_count: 2
   :name: Yaroslav
+- :secret_code: '3445'
+  :attempts: 5
+  :hint_count: 2
+  :name: Yaroslav
+- :secret_code: '2163'
+  :attempts: 0
+  :hint_count: 0
+  :name: Yaroslav
