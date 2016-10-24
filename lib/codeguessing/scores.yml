@@ -4,3 +4,19 @@
   :attempts: 4
   :hint_count: 2
   :state: true
+- :name: '1234435'
+  :secret_code: '1234'
+  :attempts: 4
+  :hint_count: 2
+  :state: 'true'
+  :answer: "++++"
+- :name: '1384848484'
+  :secret_code: '1234'
+  :attempts: 4
+  :hint_count: 2
+  :state: 'true'
+  :answer: "++++"
+- :secret_code: '1234'
+  :attempts: 4
+  :hint_count: 2
+  :name: Yayryary

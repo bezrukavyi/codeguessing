@@ -81,7 +81,7 @@ module Codeguessing
     end
 
     def save(name = 'Anonim')
-      return if @game.state != true
+      return if @game.state != 'true'
       @scores << @game.cur_score(name)
       File.new(@path, 'w') unless File.exist?(@path)
       File.open(@path, "r+") do |f|

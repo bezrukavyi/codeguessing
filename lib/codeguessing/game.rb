@@ -1,6 +1,6 @@
 module Codeguessing
   class Game
-    attr_reader :attempts, :hint_count, :state
+    attr_reader :attempts, :hint_count, :state, :answer
     attr_accessor :secret_code
 
     MAX_HINT = 2
@@ -11,6 +11,7 @@ module Codeguessing
       @attempts = opt[:attempts] || MAX_ATTEMPTS
       @hint_count = opt[:hint_count] || MAX_HINT
       @state = opt[:state] || ''
+      @answer = opt[:answer] || ''
     end
 
     def guess(code)
@@ -24,7 +25,7 @@ module Codeguessing
         end
       end
       win if res == '++++'
-      res
+      @answer = res
     end
 
     def hint
@@ -42,13 +43,20 @@ module Codeguessing
       res
     end
 
-    def cur_score(name = 'Anonim')
+    def cur_game
       hash = {}
-      hash[:name] = name
       self.instance_variables.each do |k, v|
         new_k = k.to_s.gsub('@','').to_sym
         hash[new_k] = self.instance_variable_get(k)
       end
+      hash
+    end
+
+    def cur_score(name = 'Anonim')
+      hash = cur_game
+      hash[:name] = name
+      hash.delete(:answer)
+      hash.delete(:state)
       hash
     end
 
