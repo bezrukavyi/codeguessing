@@ -1,7 +1,6 @@
 module Codeguessing
   class Game
-    attr_reader :attempts, :hint_count, :state, :answer
-    attr_accessor :secret_code
+    attr_accessor :attempts, :hint_count, :state, :answer, :secret_code
 
     MAX_HINT = 2
     MAX_ATTEMPTS = 5
@@ -16,14 +15,17 @@ module Codeguessing
 
     def guess(code)
       loose unless check?(use_attempt)
+      hash = {}
       res = ''
       code.each_char.with_index do |char, i|
-        if char == secret_code[i]
-          res += '+'
-        else
-          res += '-'
-        end
+        case
+          when char == secret_code[i]
+            res += '+'
+          when secret_code.include?(char)
+            hash[char] = '-'
+          end
       end
+      res += hash.values.join('')
       win if res == '++++'
       @answer = res
     end

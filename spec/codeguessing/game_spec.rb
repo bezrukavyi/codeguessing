@@ -1,9 +1,6 @@
 require 'spec_helper'
-require 'yaml'
 
-describe Codeguessing do
-  # let(:path) { File.absolute_path('lib/codeguessing/scores.yml') }
-  # let(:scores) { YAML.load(File.open(path)) }
+describe Codeguessing::Game do
   let(:game) { Codeguessing::Game.new }
 
   describe '#start' do
@@ -21,16 +18,16 @@ describe Codeguessing do
   describe '#guess' do
     before { game.secret_code = '1234' }
     it 'right 0 of 4' do
-      expect(game.guess('3451')).to eq('----')
+      expect(game.guess('3451')).to eq('---')
     end
     it 'right 1 of 4' do
-      expect(game.guess('1451')).to eq('+---')
+      expect(game.guess('4444')).to eq('+-')
     end
     it 'right 2 of 4' do
-      expect(game.guess('1265')).to eq('++--')
+      expect(game.guess('1263')).to eq('++-')
     end
     it 'right 3 of 4' do
-      expect(game.guess('1235')).to eq('+++-')
+      expect(game.guess('5555')).to eq('')
     end
     it 'right 4 of 4' do
       expect(game.guess('1234')).to eq('++++')
@@ -72,20 +69,23 @@ describe Codeguessing do
       expect(game.hint).to eq('')
     end
   end
-
-  # describe '#save' do
-  #   it 'when save with loose' do
-  #     game.loose
-  #     expect(game.save(path)).to equal(false)
-  #   end
-  #   it 'when save with not ended game' do
-  #     game.guess('1235')
-  #     expect(game.save(path)).to equal(false)
-  #   end
-  #   it 'when save available' do
-  #     game.win
-  #     game.save(path, 'Yaroslav')
-  #     expect(game.scores).to eq(scores)
-  #   end
-  # end
 end
+
+# let(:path) { File.absolute_path('lib/codeguessing/scores.yml') }
+# let(:scores) { YAML.load(File.open(path)) }
+
+# describe '#save' do
+#   it 'when save with loose' do
+#     game.loose
+#     expect(game.save(path)).to equal(false)
+#   end
+#   it 'when save with not ended game' do
+#     game.guess('1235')
+#     expect(game.save(path)).to equal(false)
+#   end
+#   it 'when save available' do
+#     game.win
+#     game.save(path, 'Yaroslav')
+#     expect(game.scores).to eq(scores)
+#   end
+# end

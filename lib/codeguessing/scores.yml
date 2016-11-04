@@ -1,22 +1,21 @@
 ---
-- :name: Yaroslav
-  :secret_code: '1234'
-  :attempts: 4
+- :secret_code: '2222'
+  :attempts: 5
   :hint_count: 2
-  :state: true
-- :name: '1234435'
-  :secret_code: '1234'
+  :name: Yaroslav
+- :secret_code: '1222'
+  :attempts: 3
+  :hint_count: 1
+  :name: 'Yaroslav
+
+'
+- :secret_code: '1351'
+  :attempts: 1
+  :hint_count: 0
+  :name: 'Yaroslav
+
+'
+- :secret_code: '1111'
   :attempts: 4
-  :hint_count: 2
-  :state: 'true'
-  :answer: "++++"
-- :name: '1384848484'
-  :secret_code: '1234'
-  :attempts: 4
-  :hint_count: 2
-  :state: 'true'
-  :answer: "++++"
-- :secret_code: '1234'
-  :attempts: 4
-  :hint_count: 2
-  :name: Yayryary
+  :hint_count: 0
+  :name: Ivan
