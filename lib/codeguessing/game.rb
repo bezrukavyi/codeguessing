@@ -21,7 +21,8 @@ module Codeguessing
         case
           when char == secret_code[i]
             res += '+'
-          when secret_code.count(char) == 1
+          when secret_code.count(char) == 1 &&
+               code.count(char) == 1
             hash[char] = '-'
           end
       end

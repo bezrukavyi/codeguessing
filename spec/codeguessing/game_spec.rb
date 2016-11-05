@@ -18,6 +18,9 @@ describe Codeguessing::Game do
   describe '#guess' do
     before { game.secret_code = '1234' }
     context 'answer' do
+      it 'empty' do
+        expect(game.guess('5555')).to eq('')
+      end
       it '-' do
         expect(game.guess('5155')).to eq('-')
       end
@@ -28,26 +31,30 @@ describe Codeguessing::Game do
         expect(game.guess('2155')).to eq('--')
       end
       it '+-' do
-        expect(game.guess('4444')).to eq('+-')
+        expect(game.guess('4424')).to eq('+-')
       end
       it '++' do
         game.secret_code = '6552'
         expect(game.guess('5555')).to eq('++')
       end
-      it '++-' do
-        expect(game.guess('1263')).to eq('++-')
+      it '+++' do
+        game.secret_code = '1262'
+        expect(game.guess('1261')).to eq('+++')
+      end
+      it '---' do
+        expect(game.guess('4623')).to eq('---')
       end
       it '+--' do
         expect(game.guess('1623')).to eq('+--')
       end
+      it '++-' do
+        expect(game.guess('1263')).to eq('++-')
+      end
       it '----' do
-        expect(game.guess('3451')).to eq('---')
+        expect(game.guess('4321')).to eq('----')
       end
       it '++++' do
         expect(game.guess('1234')).to eq('++++')
-      end
-      it 'empty' do
-        expect(game.guess('5555')).to eq('')
       end
     end
   end
@@ -88,22 +95,3 @@ describe Codeguessing::Game do
     end
   end
 end
-
-# let(:path) { File.absolute_path('lib/codeguessing/scores.yml') }
-# let(:scores) { YAML.load(File.open(path)) }
-
-# describe '#save' do
-#   it 'when save with loose' do
-#     game.loose
-#     expect(game.save(path)).to equal(false)
-#   end
-#   it 'when save with not ended game' do
-#     game.guess('1235')
-#     expect(game.save(path)).to equal(false)
-#   end
-#   it 'when save available' do
-#     game.win
-#     game.save(path, 'Yaroslav')
-#     expect(game.scores).to eq(scores)
-#   end
-# end
