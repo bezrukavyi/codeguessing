@@ -17,20 +17,38 @@ describe Codeguessing::Game do
 
   describe '#guess' do
     before { game.secret_code = '1234' }
-    it 'right 0 of 4' do
-      expect(game.guess('3451')).to eq('---')
-    end
-    it 'right 1 of 4' do
-      expect(game.guess('4444')).to eq('+-')
-    end
-    it 'right 2 of 4' do
-      expect(game.guess('1263')).to eq('++-')
-    end
-    it 'right 3 of 4' do
-      expect(game.guess('5555')).to eq('')
-    end
-    it 'right 4 of 4' do
-      expect(game.guess('1234')).to eq('++++')
+    context 'answer' do
+      it '-' do
+        expect(game.guess('5155')).to eq('-')
+      end
+      it '+' do
+        expect(game.guess('1555')).to eq('+')
+      end
+      it '--' do
+        expect(game.guess('2155')).to eq('--')
+      end
+      it '+-' do
+        expect(game.guess('4444')).to eq('+-')
+      end
+      it '++' do
+        game.secret_code = '6552'
+        expect(game.guess('5555')).to eq('++')
+      end
+      it '++-' do
+        expect(game.guess('1263')).to eq('++-')
+      end
+      it '+--' do
+        expect(game.guess('1623')).to eq('+--')
+      end
+      it '----' do
+        expect(game.guess('3451')).to eq('---')
+      end
+      it '++++' do
+        expect(game.guess('1234')).to eq('++++')
+      end
+      it 'empty' do
+        expect(game.guess('5555')).to eq('')
+      end
     end
   end
 
