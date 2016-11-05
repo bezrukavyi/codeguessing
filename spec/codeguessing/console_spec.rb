@@ -52,9 +52,12 @@ describe Codeguessing::Console do
         expect { console.go }.to output(game_state + msg).to_stdout
       end
       it 'when loose' do
-        msg = "You loose!\n"
+        msg = [
+          "You loose!\n",
+          "Secret code was #{console.game.secret_code}\n"
+        ]
         console.game.state = 'false'
-        expect { console.go }.to output(game_state + msg).to_stdout
+        expect { console.go }.to output(game_state + msg.join('')).to_stdout
       end
     end
 

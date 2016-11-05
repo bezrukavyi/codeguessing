@@ -81,6 +81,7 @@ module Codeguessing
 
     def loose
       puts 'You loose!'
+      puts "Secret code was #{@game.secret_code}"
       again?
     end
 

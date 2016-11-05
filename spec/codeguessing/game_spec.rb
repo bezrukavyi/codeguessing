@@ -25,33 +25,42 @@ describe Codeguessing::Game do
         expect(game.guess('5155')).to eq('-')
       end
       it '+' do
-        expect(game.guess('1555')).to eq('+')
+        game.secret_code = '2555'
+        expect(game.guess('2223')).to eq('+')
       end
       it '--' do
-        expect(game.guess('2155')).to eq('--')
+        game.secret_code = '5225'
+        expect(game.guess('2552')).to eq('--')
       end
       it '+-' do
-        expect(game.guess('4424')).to eq('+-')
+        expect(game.guess('3255')).to eq('+-')
       end
       it '++' do
-        game.secret_code = '6552'
-        expect(game.guess('5555')).to eq('++')
+        game.secret_code = '4562'
+        expect(game.guess('5522')).to eq('++')
+      end
+      it '---' do
+        expect(game.guess('3112')).to eq('---')
+      end
+      it '+--' do
+        expect(game.guess('2124')).to eq('+--')
+      end
+      it '++-' do
+        expect(game.guess('1263')).to eq('++-')
       end
       it '+++' do
         game.secret_code = '1262'
         expect(game.guess('1261')).to eq('+++')
       end
-      it '---' do
-        expect(game.guess('4623')).to eq('---')
-      end
-      it '+--' do
-        expect(game.guess('1623')).to eq('+--')
-      end
-      it '++-' do
-        expect(game.guess('1263')).to eq('++-')
-      end
       it '----' do
         expect(game.guess('4321')).to eq('----')
+      end
+      it '+---' do
+        expect(game.guess('3241')).to eq('+---')
+      end
+      it '++--' do
+        game.secret_code = '2525'
+        expect(game.guess('2552')).to eq('++--')
       end
       it '++++' do
         expect(game.guess('1234')).to eq('++++')

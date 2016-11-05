@@ -17,14 +17,18 @@ module Codeguessing
       loose unless check?(use_attempt)
       hash = {}
       res = ''
-      code.each_char.with_index do |char, i|
+      remaine_chars = code
+      right_chars = []
+      secret_code.each_char.with_index do |char, i|
         case
-          when char == secret_code[i]
-            res += '+'
-          when secret_code.count(char) == 1 &&
-               code.count(char) == 1
-            hash[char] = '-'
-          end
+        when code[i] == char
+          res += '+'
+          right_chars << char
+          remaine_chars[i] = '*'
+          hash.delete(char) if right_chars.include?(char)
+        when remaine_chars.include?(char)
+          hash[char] = '-'
+        end
       end
       res += hash.values.join('')
       win if res == '++++'
