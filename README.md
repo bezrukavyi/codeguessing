@@ -24,6 +24,6 @@ Or install it yourself as:
 
 ```ruby
 require 'codeguessing'
-Codeguessing::Console.new # Console game
+Codeguessing::Console.new.go # Console game
 Codeguessing::Game.new # Game model
 ```
