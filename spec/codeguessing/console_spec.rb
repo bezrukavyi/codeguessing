@@ -107,7 +107,7 @@ describe Codeguessing::Console do
           console.send(:save!, name)
           expect(console.scores).to include(console.game.cur_score(name))
         end
-        it 'when cant save' do
+        it 'when not save' do
           msg = "You cant save game\n"
           expect { console.send(:save!) }.to output(msg).to_stdout
         end

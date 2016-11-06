@@ -62,6 +62,7 @@ module Codeguessing
     def cur_score(name = 'Anonim')
       hash = cur_game
       hash[:name] = name
+      hash[:date] = Time.now.to_i
       hash.delete(:answer)
       hash.delete(:state)
       hash
