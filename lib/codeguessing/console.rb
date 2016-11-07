@@ -2,19 +2,27 @@ module Codeguessing
   class Console
     attr_reader :game, :scores, :path
 
+    RULES = [
+      '-----------------Rules!----------------------',
+      "You need guess secret code. This four-digit number with symbols from 1 to 6",
+      "You have #{Game::MAX_ATTEMPTS} attempt(s) and #{Game::MAX_HINT} hint(s)",
+      "If you want get hint write 'hint'",
+      '---------------------------------------------'
+    ]
+
     def initialize(opt = {})
       @path = File.join(File.dirname(__FILE__), 'scores.yml')
       @scores = load(@path)
       @game = Game.new(opt)
     end
 
-    def go(know = true)
-      rules if know
+    def go(knowed = false)
+      rules unless knowed
       puts "Attempt(s): #{@game.attempts} | Hint(s): #{@game.hint_count}"
       case @game.state
-        when 'true'
+        when 'win'
           win
-        when 'false'
+        when 'loose'
           loose
         else
           gaming
@@ -23,15 +31,8 @@ module Codeguessing
 
     def	rules
       puts "Do you know rules? (Y/N)"
-      rules = [
-        '-----------------Rules!----------------------',
-        "You need guess secret code. This four-digit number with symbols from 1 to 6",
-        "You have #{@game.attempts} attempt(s) and #{@game.hint_count} hint(s)",
-        "If you want get hint write 'hint'",
-        '---------------------------------------------'
-      ]
       unless confirm?
-        puts rules.join("\n")
+        puts RULES.join("\n")
       end
     end
 
@@ -59,7 +60,7 @@ module Codeguessing
     end
 
     def save!(name = 'Anonim')
-      if @game.state != 'true'
+      if @game.state != 'win'
         return puts 'You cant save game'
       end
       name.chomp!
@@ -96,7 +97,7 @@ module Codeguessing
       puts 'Do you want start again? (Y/N)'
       if confirm?
         @game = Game.new
-        return go(false)
+        return go(true)
       else
         puts '-----------Scores----------'
         p @scores

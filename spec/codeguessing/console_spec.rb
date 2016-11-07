@@ -13,15 +13,11 @@ describe Codeguessing::Console do
   end
 
   describe '#rules' do
-    before { allow(console).to receive(:gaming) }
     let(:wellcome) { "Do you know rules? (Y/N)\n" }
-    let(:rules) {[
-        "-----------------Rules!----------------------\n",
-        "You need guess secret code. This four-digit number with symbols from 1 to 6\n",
-        "You have #{game.attempts} attempt(s) and #{game.hint_count} hint(s)\n",
-        "If you want get hint write 'hint'\n",
-        "---------------------------------------------\n"
-      ]}
+    before do
+      allow(console).to receive(:gaming)
+      stub_const('Codeguessing::Console::RULES', ['rules'])
+    end
 
     it 'when know rules' do
       allow(console).to receive(:gets).and_return('y')
@@ -29,8 +25,8 @@ describe Codeguessing::Console do
     end
     it 'when dont know rules' do
       allow(console).to receive(:gets).and_return('n')
-      rules.unshift(wellcome)
-      expect { console.rules }.to output(rules.join('')).to_stdout
+      message = wellcome + "rules\n"
+      expect { console.rules }.to output(message).to_stdout
     end
   end
 
@@ -47,17 +43,17 @@ describe Codeguessing::Console do
 
       it 'when win' do
         allow(console).to receive(:save?)
-        msg = "You win!\n"
-        console.game.state = 'true'
-        expect { console.go }.to output(game_state + msg).to_stdout
+        message = "You win!\n"
+        console.game.state = 'win'
+        expect { console.go }.to output(game_state + message).to_stdout
       end
       it 'when loose' do
-        msg = [
+        message = [
           "You loose!\n",
           "Secret code was #{console.game.secret_code}\n"
         ]
-        console.game.state = 'false'
-        expect { console.go }.to output(game_state + msg.join('')).to_stdout
+        console.game.state = 'loose'
+        expect { console.go }.to output(game_state + message.join('')).to_stdout
       end
     end
 
@@ -83,16 +79,16 @@ describe Codeguessing::Console do
       let(:question) { "Do you want save result? (Y/N)\n" }
       describe '#save?' do
         it 'when save' do
-          msg = "Write your name\n"
+          message = "Write your name\n"
           allow(console).to receive(:gets)
           allow(console).to receive(:confirm?).and_return(true)
           allow(console).to receive(:save!)
-          expect { console.send(:save?) }.to output(question + msg).to_stdout
+          expect { console.send(:save?) }.to output(question + message).to_stdout
         end
         it 'when not save' do
-          msg = "Goodbie!\n"
+          message = "Goodbie!\n"
           allow(console).to receive(:confirm?).and_return(false)
-          expect { console.send(:save?) }.to output(question + msg).to_stdout
+          expect { console.send(:save?) }.to output(question + message).to_stdout
         end
       end
       describe '#save!' do
@@ -103,13 +99,13 @@ describe Codeguessing::Console do
           File.open(console.path, 'w') { |f| YAML.dump(scores, f) }
         end
         it 'when save' do
-          console.game.state = 'true'
+          console.game.state = 'win'
           console.send(:save!, name)
           expect(console.scores).to include(console.game.cur_score(name))
         end
         it 'when not save' do
-          msg = "You cant save game\n"
-          expect { console.send(:save!) }.to output(msg).to_stdout
+          message = "You cant save game\n"
+          expect { console.send(:save!) }.to output(message).to_stdout
         end
       end
     end
@@ -122,13 +118,13 @@ describe Codeguessing::Console do
       end
       it 'when not again' do
         allow(console).to receive(:confirm?).and_return(false)
-        msg = [
+        message = [
           "Do you want start again? (Y/N)\n",
           "-----------Scores----------\n",
           "#{console.scores}\n",
           "---------------------------\n"
         ]
-        expect { console.send(:again?) }.to output(msg.join('')).to_stdout
+        expect { console.send(:again?) }.to output(message.join('')).to_stdout
       end
     end
 

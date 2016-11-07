@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Codeguessing::Game do
   let(:game) { Codeguessing::Game.new }
+  MAX_ATTEMPTS = Codeguessing::Game::MAX_ATTEMPTS
+
 
   describe '#start' do
     it 'saves secret code' do
@@ -15,57 +17,73 @@ describe Codeguessing::Game do
     end
   end
 
-  describe '#guess' do
+
+  describe 'game process' do
     before { game.secret_code = '1234' }
-    context 'answer' do
-      it 'empty' do
-        expect(game.guess('5555')).to eq('')
-      end
-      it '-' do
-        expect(game.guess('5155')).to eq('-')
-      end
-      it '+' do
-        game.secret_code = '2555'
-        expect(game.guess('2223')).to eq('+')
-      end
-      it '--' do
-        game.secret_code = '5225'
-        expect(game.guess('2552')).to eq('--')
-      end
-      it '+-' do
-        expect(game.guess('3255')).to eq('+-')
-      end
-      it '++' do
-        game.secret_code = '4562'
-        expect(game.guess('5522')).to eq('++')
-      end
-      it '---' do
-        expect(game.guess('3112')).to eq('---')
-      end
-      it '+--' do
-        expect(game.guess('2124')).to eq('+--')
-      end
-      it '++-' do
-        expect(game.guess('1263')).to eq('++-')
-      end
-      it '+++' do
-        game.secret_code = '1262'
-        expect(game.guess('1261')).to eq('+++')
-      end
-      it '----' do
-        expect(game.guess('4321')).to eq('----')
-      end
-      it '+---' do
-        expect(game.guess('3241')).to eq('+---')
-      end
-      it '++--' do
-        game.secret_code = '2525'
-        expect(game.guess('2552')).to eq('++--')
-      end
-      it '++++' do
-        expect(game.guess('1234')).to eq('++++')
+
+    describe '#get_mark' do
+      context 'answer' do
+        it 'empty' do
+          expect(game.get_mark('5555')).to eq('')
+        end
+        it '-' do
+          expect(game.get_mark('5155')).to eq('-')
+        end
+        it '+' do
+          game.secret_code = '2555'
+          expect(game.get_mark('2223')).to eq('+')
+        end
+        it '--' do
+          game.secret_code = '5225'
+          expect(game.get_mark('2552')).to eq('--')
+        end
+        it '+-' do
+          expect(game.get_mark('3255')).to eq('+-')
+        end
+        it '++' do
+          game.secret_code = '4562'
+          expect(game.get_mark('5522')).to eq('++')
+        end
+        it '---' do
+          expect(game.get_mark('3112')).to eq('---')
+        end
+        it '+--' do
+          expect(game.get_mark('2124')).to eq('+--')
+        end
+        it '++-' do
+          expect(game.get_mark('1263')).to eq('++-')
+        end
+        it '+++' do
+          game.secret_code = '1262'
+          expect(game.get_mark('1261')).to eq('+++')
+        end
+        it '----' do
+          expect(game.get_mark('4321')).to eq('----')
+        end
+        it '+---' do
+          expect(game.get_mark('3241')).to eq('+---')
+        end
+        it '++--' do
+          game.secret_code = '2525'
+          expect(game.get_mark('2552')).to eq('++--')
+        end
+        it '++++' do
+          expect(game.get_mark('1234')).to eq('++++')
+        end
       end
     end
+
+    describe '#guess' do
+      it 'when win' do
+        game.guess('1234')
+        expect(game.state).to eq('win')
+      end
+      it 'when loose' do
+        MAX_ATTEMPTS.times { game.guess('8765') }
+        expect(game.state).to eq('loose')
+      end
+    end
+
   end
 
   context '#valid?' do
@@ -79,15 +97,11 @@ describe Codeguessing::Game do
 
   describe '#attempt' do
     it 'attempt limit' do
-      expect(game.attempts).to eq(Codeguessing::Game::MAX_ATTEMPTS)
+      expect(game.attempts).to eq(MAX_ATTEMPTS)
     end
     it 'attempt balance' do
       2.times { game.guess('1235') }
-      expect(game.attempts).to eq(Codeguessing::Game::MAX_ATTEMPTS - 2)
-    end
-    it 'when attempt ended' do
-      11.times { game.guess('8765') }
-      expect(game.state).to eq(game.loose)
+      expect(game.attempts).to eq(MAX_ATTEMPTS - 2)
     end
   end
 
