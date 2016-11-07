@@ -4,6 +4,7 @@ module Codeguessing
 
     MAX_HINT = 2
     MAX_ATTEMPTS = 5
+    MAX_SIZE = 4
 
     def initialize(opt = {})
       @secret_code = opt[:secret_code] || random
@@ -15,6 +16,7 @@ module Codeguessing
 
     def guess(code)
       loose unless check?(use_attempt)
+      return false unless valid?(code)
       hash = {}
       res = ''
       remaine_chars = code
@@ -31,13 +33,13 @@ module Codeguessing
         end
       end
       res += hash.values.join('')
-      win if res == '++++'
+      win if res == '+' * MAX_SIZE
       @answer = res
     end
 
     def hint
       res = ''
-      need_index = rand(0...4)
+      need_index = rand(0...MAX_SIZE)
       secret_code.each_char.with_index do |char, index|
         if index == need_index
           res += char
@@ -69,7 +71,7 @@ module Codeguessing
     end
 
     def valid?(code)
-      return true if code =~ /^[1-6]{4}$/s
+      return true if code =~ /^[1-6]{#{MAX_SIZE}}$/s
       false
     end
 
@@ -96,7 +98,7 @@ module Codeguessing
 
     def random
       code = ''
-      4.times { code += rand(1..6).to_s }
+      MAX_SIZE.times { code += rand(1..6).to_s }
       code
     end
 
