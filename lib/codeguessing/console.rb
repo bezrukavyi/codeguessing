@@ -19,13 +19,13 @@ module Codeguessing
     def go(knowed = false)
       rules unless knowed
       puts "Attempt(s): #{@game.attempts} | Hint(s): #{@game.hint_count}"
-      case @game.state
-        when 'win'
-          win
-        when 'loose'
-          loose
-        else
-          gaming
+      case @game.win?
+      when true
+        win
+      when false
+        loose
+      else
+        gaming
       end
     end
 
@@ -60,7 +60,7 @@ module Codeguessing
     end
 
     def save!(name = 'Anonim')
-      if @game.state != 'win'
+      unless @game.win?
         return puts 'You cant save game'
       end
       name.chomp!

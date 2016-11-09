@@ -15,8 +15,8 @@ module Codeguessing
     end
 
     def guess(code)
-      loose unless check?(use_attempt)
-      win if code == secret_code
+      @state = 'loose' unless check?(use_attempt)
+      @state = 'win' if code == secret_code
       @answer = get_mark(code)
     end
 
@@ -66,15 +66,14 @@ module Codeguessing
       @hint_count -= 1
     end
 
+    def win?
+      case @state
+      when 'win' then true
+      when 'loose' then false
+      end
+    end
+
     private
-
-    def win
-      @state = 'win'
-    end
-
-    def loose
-      @state = 'loose'
-    end
 
     def check?(varible)
       return false if varible == 0

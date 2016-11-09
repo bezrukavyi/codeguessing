@@ -76,11 +76,11 @@ describe Codeguessing::Game do
     describe '#guess' do
       it 'when win' do
         game.guess('1234')
-        expect(game.state).to eq('win')
+        expect(game.win?).to eq(true)
       end
       it 'when loose' do
         MAX_ATTEMPTS.times { game.guess('8765') }
-        expect(game.state).to eq('loose')
+        expect(game.win?).to eq(false)
       end
     end
 
