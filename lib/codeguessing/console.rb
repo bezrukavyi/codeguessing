@@ -16,8 +16,8 @@ module Codeguessing
       @game = Game.new(opt)
     end
 
-    def go(knowed = false)
-      rules unless knowed
+    def go(knowed = true)
+      rules if knowed
       puts "Attempt(s): #{@game.attempts} | Hint(s): #{@game.hint_count}"
       case @game.win?
       when true
@@ -97,7 +97,7 @@ module Codeguessing
       puts 'Do you want start again? (Y/N)'
       if confirm?
         @game = Game.new
-        return go(true)
+        return go(false)
       else
         puts '-----------Scores----------'
         p @scores

@@ -49,6 +49,8 @@ module Codeguessing
     def cur_score(name = 'Anonim')
       hash = cur_game
       hash[:name] = name
+      hash[:attempts] = MAX_SIZE - attempts
+      hash[:hint_count] = MAX_HINT - hint_count
       hash[:date] = Time.now.to_i
       hash
     end
