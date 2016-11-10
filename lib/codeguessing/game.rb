@@ -75,6 +75,15 @@ module Codeguessing
       end
     end
 
+    def cur_game
+      hash = {}
+      self.instance_variables.each do |k, v|
+        new_k = k.to_s.gsub('@','').to_sym
+        hash[new_k] = self.instance_variable_get(k)
+      end
+      hash
+    end
+
     private
 
     def check?(varible)
@@ -86,15 +95,6 @@ module Codeguessing
       code = ''
       MAX_SIZE.times { code += rand(1..6).to_s }
       code
-    end
-
-    def cur_game
-      hash = {}
-      self.instance_variables.each do |k, v|
-        new_k = k.to_s.gsub('@','').to_sym
-        hash[new_k] = self.instance_variable_get(k)
-      end
-      hash
     end
 
   end
