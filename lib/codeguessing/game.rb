@@ -6,12 +6,12 @@ module Codeguessing
     MAX_ATTEMPTS = 5
     MAX_SIZE = 4
 
-    def initialize(opt = {})
-      @secret_code = opt[:secret_code] || random
-      @attempts = opt[:attempts] || MAX_ATTEMPTS
-      @hint_count = opt[:hint_count] || MAX_HINT
-      @state = opt[:state] || ''
-      @answer = opt[:answer] || ''
+    def initialize
+      @secret_code = random
+      @attempts = MAX_ATTEMPTS
+      @hint_count = MAX_HINT
+      @state = ''
+      @answer = ''
     end
 
     def guess(code)
@@ -23,17 +23,17 @@ module Codeguessing
     def get_mark(code)
       return false unless valid?(code)
       hash = {}
-      res = ''
+      mark = ''
       secret_code.each_char.with_index do |char, i|
         if code[i] == char
-          res += '+'
-          code[i] = '_'
+          mark += '+'
+          code[i] = '*'
           hash.delete(char)
         elsif code.include?(char)
           hash[char] = '-'
         end
       end
-      res += hash.values.join('')
+      mark += hash.values.join('')
     end
 
     def hint
@@ -41,9 +41,20 @@ module Codeguessing
       use_hint
       hint = '*' * MAX_SIZE
       index = rand(0...MAX_SIZE)
-      code_char = secret_code[index]
-      hint[index] = code_char
+      hint[index] = secret_code[index]
       hint
+    end
+
+    def valid?(code)
+      return true if code =~ /^[1-6]{#{MAX_SIZE}}$/s
+      false
+    end
+
+    def win?
+      case @state
+      when 'win' then true
+      when 'loose' then false
+      end
     end
 
     def cur_score(name = 'Anonim')
@@ -55,9 +66,24 @@ module Codeguessing
       hash
     end
 
-    def valid?(code)
-      return true if code =~ /^[1-6]{#{MAX_SIZE}}$/s
-      false
+    def cur_game
+      attributes = instance_variables.map do |var|
+        [var[1..-1].to_sym, instance_variable_get(var)]
+      end
+      attributes.to_h
+    end
+
+    private
+
+    def check?(varible)
+      return false if varible <= 0
+      true
+    end
+
+    def random
+      code = ''
+      MAX_SIZE.times { code += rand(1..6).to_s }
+      code
     end
 
     def use_attempt
@@ -66,35 +92,6 @@ module Codeguessing
 
     def use_hint
       @hint_count -= 1
-    end
-
-    def win?
-      case @state
-      when 'win' then true
-      when 'loose' then false
-      end
-    end
-
-    def cur_game
-      hash = {}
-      self.instance_variables.each do |k, v|
-        new_k = k.to_s.gsub('@','').to_sym
-        hash[new_k] = self.instance_variable_get(k)
-      end
-      hash
-    end
-
-    private
-
-    def check?(varible)
-      return false if varible == 0
-      true
-    end
-
-    def random
-      code = ''
-      MAX_SIZE.times { code += rand(1..6).to_s }
-      code
     end
 
   end

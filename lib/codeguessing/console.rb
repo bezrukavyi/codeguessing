@@ -10,14 +10,30 @@ module Codeguessing
       '---------------------------------------------'
     ]
 
-    def initialize(opt = {})
+    MESSAGE = {
+      rules?: 'Do you know rules? (Y/N)',
+      again?: 'Do you want start again? (Y/N)',
+      save?: 'Do you want save result? (Y/N)',
+      not_save: 'Maybe next time',
+      set_name: 'Write your name',
+      invalid_data: 'Invalid data',
+      cant_save: 'You cant save game',
+      loose_code: 'Secret code was',
+      scores_line: {
+        start: '-----------Scores----------',
+        end: '---------------------------' },
+      loose: 'You loose!',
+      win: 'You win!'
+    }
+
+    def initialize
       @path = File.join(File.dirname(__FILE__), 'scores.yml')
       @scores = load(@path)
-      @game = Game.new(opt)
+      @game = Game.new
     end
 
-    def go(knowed = true)
-      rules if knowed
+    def go(knowed = false)
+      rules unless knowed
       puts "Attempt(s): #{@game.attempts} | Hint(s): #{@game.hint_count}"
       case @game.win?
       when true
@@ -30,7 +46,7 @@ module Codeguessing
     end
 
     def	rules
-      puts "Do you know rules? (Y/N)"
+      puts MESSAGE[:rules?]
       unless confirm?
         puts RULES.join("\n")
       end
@@ -40,14 +56,14 @@ module Codeguessing
       action = gets.chomp
       if action == 'hint'
         puts @game.hint
-        return go(false)
+        return go(true)
       end
       if @game.valid?(action)
         puts @game.guess(action)
       else
-        puts 'Invalid data'
+        puts MESSAGE[:invalid_data]
       end
-      go(false)
+      go(true)
     end
 
     def confirm?(action = gets.chomp)
@@ -60,11 +76,8 @@ module Codeguessing
     end
 
     def save!(name = 'Anonim')
-      unless @game.win?
-        return puts 'You cant save game'
-      end
-      name.chomp!
-      @scores << @game.cur_score(name)
+      return puts MESSAGE[:cant_save] unless @game.win?
+      @scores << @game.cur_score(name.chomp)
       File.new(@path, 'w') unless File.exist?(@path)
       File.open(@path, "r+") do |f|
         f.write(@scores.to_yaml)
@@ -75,33 +88,33 @@ module Codeguessing
     private
 
     def win
-      puts 'You win!'
+      puts MESSAGE[:win]
       save?
       again?
     end
 
     def loose
-      puts 'You loose!'
-      puts "Secret code was #{@game.secret_code}"
+      puts MESSAGE[:loose]
+      puts "#{MESSAGE[:loose_code]} #{@game.secret_code}"
       again?
     end
 
     def save?
-      puts 'Do you want save result? (Y/N)'
-      return puts 'Goodbie!' unless confirm?
-      puts 'Write your name'
+      puts MESSAGE[:save?]
+      return puts MESSAGE[:not_save] unless confirm?
+      puts MESSAGE[:set_name]
       save!(gets)
     end
 
     def again?
-      puts 'Do you want start again? (Y/N)'
+      puts MESSAGE[:again?]
       if confirm?
         @game = Game.new
-        return go(false)
+        return go(true)
       else
-        puts '-----------Scores----------'
+        puts MESSAGE[:scores_line][:start]
         p @scores
-        puts '---------------------------'
+        puts MESSAGE[:scores_line][:end]
       end
     end
 
