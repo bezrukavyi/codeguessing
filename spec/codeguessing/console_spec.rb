@@ -3,123 +3,143 @@ require 'yaml'
 require 'colorize'
 
 describe Codeguessing::Console do
-  let(:console) { Codeguessing::Console.new }
-  let(:game) { console.game }
+  subject { Codeguessing::Console.new }
+  let(:game) { subject.game }
   MESSAGE = Codeguessing::Console::MESSAGE
 
   describe '#rules' do
-    let(:wellcome) { MESSAGE[:rules?] + "\n" }
+    let(:wellcome) { MESSAGE['rules?'] + "\n" }
     before do
-      allow(console).to receive(:gaming)
-      stub_const('Codeguessing::Console::RULES', ['rules'])
+      allow(subject).to receive(:gaming)
     end
 
     it 'when know rules' do
-      allow(console).to receive(:gets).and_return('y')
-      expect { console.rules }.to output(wellcome).to_stdout
+      allow(subject).to receive(:gets).and_return('y')
+      expect { subject.rules }.to output(wellcome).to_stdout
     end
+
     it 'when dont know rules' do
-      allow(console).to receive(:gets).and_return('n')
-      message = wellcome + "rules\n"
-      expect { console.rules }.to output(message).to_stdout
+      allow(subject).to receive(:gets).and_return('n')
+      message = wellcome + MESSAGE['rules'].join("\n") + "\n"
+      expect { subject.rules }.to output(message).to_stdout
     end
   end
 
   context 'when gaming' do
-    let(:game_state) { "Attempt(s): #{game.attempts} | Hint(s): #{game.hint_count}\n" }
+    let(:game_status) { "Attempt(s): #{game.attempts} | Hint(s): #{game.hint_count}\n" }
     before do
       game.secret_code = '2222'
     end
+
     describe '#go' do
       before do
-        allow(console).to receive(:again?)
-        allow(console).to receive(:rules)
+        allow(subject).to receive(:again)
+        allow(subject).to receive(:rules)
       end
 
       it 'when win' do
-        allow(console).to receive(:save?)
-        message = MESSAGE[:win] + "\n"
+        allow(subject).to receive(:save?)
+        message = MESSAGE['win'] + "\n"
         game.state = 'win'
-        expect { console.go }.to output(game_state + message).to_stdout
+        expect { subject.go }.to output(game_status + message).to_stdout
       end
+
       it 'when loose' do
         message = [
-          "#{MESSAGE[:loose]}\n",
-          "#{MESSAGE[:loose_code]} #{game.secret_code}\n"
+          "#{MESSAGE['loose']}\n",
+          "#{MESSAGE['loose_code']} #{game.secret_code}\n"
         ]
         game.state = 'loose'
-        expect { console.go }.to output(game_state + message.join('')).to_stdout
+        message = game_status + message.join('')
+        expect { subject.go }.to output(message).to_stdout
       end
     end
 
     describe '#gaming' do
-      before { allow(console).to receive(:go) }
+      before { allow(subject).to receive(:go) }
+
       it 'when valid' do
-        allow(console).to receive(:gets).and_return('1234')
-        game_res = "+\n"
-        expect { console.gaming }.to output(game_res).to_stdout
+        allow(subject).to receive(:gets).and_return('1234')
+        message = "+\n"
+        expect { subject.gaming }.to output(message).to_stdout
       end
+
       it 'when not valid' do
-        allow(console).to receive(:gets).and_return('123')
-        game_res = MESSAGE[:invalid_data] + "\n"
-        expect { console.gaming }.to output(game_res).to_stdout
+        allow(subject).to receive(:gets).and_return('123')
+        message = MESSAGE['invalid_data'] + "\n"
+        expect { subject.gaming }.to output(message).to_stdout
       end
+
       it 'when hint' do
-        allow(console).to receive(:gets).and_return('hint')
-        expect { console.gaming }.to output(/\d{1}/).to_stdout
+        allow(subject).to receive(:gets).and_return('hint')
+        expect { subject.gaming }.to output(/\d{1}/).to_stdout
       end
     end
 
     context 'saving process'do
-      let(:question) { MESSAGE[:save?] + "\n" }
+      let(:question) { MESSAGE['save?'] + "\n" }
+
       describe '#save?' do
         it 'when save' do
-          message = MESSAGE[:set_name] + "\n"
-          allow(console).to receive(:gets)
-          allow(console).to receive(:confirm?).and_return(true)
-          allow(console).to receive(:save!)
-          expect { console.send(:save?) }.to output(question + message).to_stdout
+          allow(subject).to receive(:gets)
+          allow(subject).to receive(:save)
+          allow(subject).to receive(:confirm?).and_return(true)
+          message = MESSAGE['set_name'] + "\n"
+          expect { subject.send(:save?) }.to output(question + message).to_stdout
         end
+
         it 'when not save' do
-          message = MESSAGE[:not_save] + "\n"
-          allow(console).to receive(:confirm?).and_return(false)
-          expect { console.send(:save?) }.to output(question + message).to_stdout
+          allow(subject).to receive(:confirm?).and_return(false)
+          message = MESSAGE['not_saved'] + "\n"
+          expect { subject.send(:save?) }.to output(question + message).to_stdout
         end
       end
-      describe '#save!' do
+
+      describe '#save' do
         let(:name) { 'TestRspec' }
+        let(:test_path) { File.expand_path('../../fixtures/scores.yml', __FILE__) }
         after do
-          scores = YAML.load_file(console.path)
-          scores.delete_if { |h| h[:name] == name }
-          File.open(console.path, 'w') { |f| YAML.dump(scores, f) }
+          File.open(test_path, 'w') { |f| YAML.dump(f) }
         end
+
         it 'when save' do
           game.state = 'win'
-          console.send(:save!, name)
-          expect(console.scores).to include(game.cur_score(name))
+          subject.send(:save, name: 'TestRspec', path: test_path)
+          data_scores = YAML.load_file(test_path)
+          expect(subject.scores).to eq(data_scores)
         end
+
         it 'when not save' do
-          message = MESSAGE[:cant_save] + "\n"
-          expect { console.send(:save!) }.to output(message).to_stdout
+          message = MESSAGE['cant_save'] + "\n"
+          expect { subject.send(:save) }.to output(message).to_stdout
         end
       end
     end
 
     describe '#again?' do
-      before { allow(console).to receive(:go).and_return(game) }
-      it 'when again' do
-        allow(console).to receive(:confirm?).and_return(true)
-        expect(console.send(:again?)).to be_a(game.class)
+      before { allow(subject).to receive(:go).and_return(game) }
+
+      context 'when again' do
+        let(:old_game) { game }
+        let(:new_game) { subject.send(:again) }
+        before { allow(subject).to receive(:confirm?).and_return(true) }
+        it 'must be kind of Game' do
+          expect(new_game).to be_a(game.class)
+        end
+        it 'must be new game' do
+          expect(new_game.equal?(old_game)).to be_truthy
+        end
       end
+
       it 'when not again' do
-        allow(console).to receive(:confirm?).and_return(false)
+        allow(subject).to receive(:confirm?).and_return(false)
         message = [
-          "#{MESSAGE[:again?]}\n",
-          "#{MESSAGE[:scores_line][:start]}\n",
-          "#{console.scores}\n",
-          "#{MESSAGE[:scores_line][:end]}\n"
+          "#{MESSAGE['again?']}\n",
+          "#{MESSAGE['scores_line']['start']}\n",
+          "#{subject.scores}\n",
+          "#{MESSAGE['scores_line']['end']}\n"
         ]
-        expect { console.send(:again?) }.to output(message.join('')).to_stdout
+        expect { subject.send(:again) }.to output(message.join('')).to_stdout
       end
     end
 

@@ -15,39 +15,34 @@ module Codeguessing
     end
 
     def guess(code)
-      @state = 'loose' unless check?(use_attempt)
+      @state = 'loose' unless natural?(use_attempt)
       @state = 'win' if code == secret_code
       @answer = get_mark(code)
     end
 
     def get_mark(code)
       return false unless valid?(code)
-      hash = {}
+      wrong_answers = {}
       mark = ''
-      secret_code.each_char.with_index do |char, i|
-        if code[i] == char
+      secret_code.each_char.with_index do |char, index|
+        if code[index] == char
           mark += '+'
-          code[i] = '*'
-          hash.delete(char)
+          code[index] = '*'
+          wrong_answers.delete(char)
         elsif code.include?(char)
-          hash[char] = '-'
+          wrong_answers[char] = '-'
         end
       end
-      mark += hash.values.join('')
+      mark += wrong_answers.values.join('')
     end
 
     def hint
-      return '' unless check?(hint_count)
+      return '' unless natural?(hint_count)
       use_hint
       hint = '*' * MAX_SIZE
       index = rand(0...MAX_SIZE)
       hint[index] = secret_code[index]
       hint
-    end
-
-    def valid?(code)
-      return true if code =~ /^[1-6]{#{MAX_SIZE}}$/s
-      false
     end
 
     def win?
@@ -58,12 +53,12 @@ module Codeguessing
     end
 
     def cur_score(name = 'Anonim')
-      hash = cur_game
-      hash[:name] = name
-      hash[:attempts] = MAX_SIZE - attempts
-      hash[:hint_count] = MAX_HINT - hint_count
-      hash[:date] = Time.now.to_i
-      hash
+      scores = cur_game
+      scores[:name] = name
+      scores[:attempts] = MAX_SIZE - attempts
+      scores[:hint_count] = MAX_HINT - hint_count
+      scores[:date] = Time.now.to_i
+      scores
     end
 
     def cur_game
@@ -73,10 +68,15 @@ module Codeguessing
       attributes.to_h
     end
 
+    def valid?(code)
+      return true if code =~ /^[1-6]{#{MAX_SIZE}}$/s
+      false
+    end
+
     private
 
-    def check?(varible)
-      return false if varible <= 0
+    def natural?(number)
+      return false if number <= 0
       true
     end
 

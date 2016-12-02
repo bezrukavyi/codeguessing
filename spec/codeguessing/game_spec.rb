@@ -21,58 +21,6 @@ describe Codeguessing::Game do
   describe 'game process' do
     before { game.secret_code = '1234' }
 
-    describe '#get_mark' do
-      context 'answer' do
-        it 'empty' do
-          expect(game.get_mark('5555')).to eq('')
-        end
-        it '-' do
-          expect(game.get_mark('5155')).to eq('-')
-        end
-        it '+' do
-          game.secret_code = '2555'
-          expect(game.get_mark('2223')).to eq('+')
-        end
-        it '--' do
-          game.secret_code = '5225'
-          expect(game.get_mark('2552')).to eq('--')
-        end
-        it '+-' do
-          expect(game.get_mark('3255')).to eq('+-')
-        end
-        it '++' do
-          game.secret_code = '4562'
-          expect(game.get_mark('5522')).to eq('++')
-        end
-        it '---' do
-          expect(game.get_mark('3112')).to eq('---')
-        end
-        it '+--' do
-          expect(game.get_mark('2124')).to eq('+--')
-        end
-        it '++-' do
-          expect(game.get_mark('1263')).to eq('++-')
-        end
-        it '+++' do
-          game.secret_code = '1262'
-          expect(game.get_mark('1261')).to eq('+++')
-        end
-        it '----' do
-          expect(game.get_mark('4321')).to eq('----')
-        end
-        it '+---' do
-          expect(game.get_mark('3241')).to eq('+---')
-        end
-        it '++--' do
-          game.secret_code = '2525'
-          expect(game.get_mark('2552')).to eq('++--')
-        end
-        it '++++' do
-          expect(game.get_mark('1234')).to eq('++++')
-        end
-      end
-    end
-
     describe '#guess' do
       it 'when win' do
         game.guess('1234')
@@ -84,11 +32,61 @@ describe Codeguessing::Game do
       end
     end
 
+    describe '#get_mark' do
+      it 'empty' do
+        expect(game.get_mark('5555')).to eq('')
+      end
+      it '-' do
+        expect(game.get_mark('5155')).to eq('-')
+      end
+      it '+' do
+        game.secret_code = '2222'
+        expect(game.get_mark('1234')).to eq('+')
+      end
+      it '--' do
+        game.secret_code = '5225'
+        expect(game.get_mark('2552')).to eq('--')
+      end
+      it '+-' do
+        expect(game.get_mark('3255')).to eq('+-')
+      end
+      it '++' do
+        game.secret_code = '4562'
+        expect(game.get_mark('5522')).to eq('++')
+      end
+      it '---' do
+        expect(game.get_mark('3112')).to eq('---')
+      end
+      it '+--' do
+        expect(game.get_mark('2124')).to eq('+--')
+      end
+      it '++-' do
+        expect(game.get_mark('1263')).to eq('++-')
+      end
+      it '+++' do
+        game.secret_code = '1262'
+        expect(game.get_mark('1261')).to eq('+++')
+      end
+      it '----' do
+        expect(game.get_mark('4321')).to eq('----')
+      end
+      it '+---' do
+        expect(game.get_mark('3241')).to eq('+---')
+      end
+      it '++--' do
+        game.secret_code = '2525'
+        expect(game.get_mark('2552')).to eq('++--')
+      end
+      it '++++' do
+        expect(game.get_mark('1234')).to eq('++++')
+      end
+    end
+
   end
 
   context '#valid?' do
     it 'when invalid' do
-      expect(game.valid?('dfsdf')).to eq(false)
+      expect(game.valid?('123')).to eq(false)
     end
     it 'when valid' do
       expect(game.valid?('1234')).to eq(true)
