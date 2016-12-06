@@ -1,6 +1,6 @@
 module Codeguessing
   class Console
-    attr_reader :game, :scores
+    attr_reader :game, :scores, :path
 
     MESSAGE = YAML.load_file(File.join(File.dirname(__FILE__), 'data/messages.yml'))
 
@@ -50,7 +50,7 @@ module Codeguessing
       YAML.load_file(path) if File.exist?(path)
     end
 
-    def save(name: 'Anonim', path: @path)
+    def save(name = 'Anonim')
       return puts MESSAGE['cant_save'] unless game.win?
       @scores << game.cur_score(name.chomp)
       File.new(path, 'w') unless File.exist?(path)

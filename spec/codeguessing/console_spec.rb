@@ -103,8 +103,9 @@ describe Codeguessing::Console do
         end
 
         it 'when save' do
+          allow(subject).to receive(:path).and_return(test_path)
           game.state = 'win'
-          subject.send(:save, name: 'TestRspec', path: test_path)
+          subject.send(:save, 'TestRspec')
           data_scores = YAML.load_file(test_path)
           expect(subject.scores).to eq(data_scores)
         end

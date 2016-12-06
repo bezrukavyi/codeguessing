@@ -16,9 +16,6 @@ describe Codeguessing::Game do
     end
   end
 
-
-
-
   describe '#guess' do
     before { game.secret_code = '1234' }
     it 'when win' do
@@ -26,7 +23,7 @@ describe Codeguessing::Game do
       expect(game.win?).to eq(true)
     end
     it 'when loose' do
-      (MAX_ATTEMPTS + 1).times { game.guess('2222') }
+      MAX_ATTEMPTS.times { game.guess('2222') }
       expect(game.win?).to eq(false)
     end
   end

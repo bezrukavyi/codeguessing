@@ -85,7 +85,7 @@ module Codeguessing
     private
 
     def natural?(number)
-      number >= 0
+      number <= 0 ? false : true
     end
 
     def random
