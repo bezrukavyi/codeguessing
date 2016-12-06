@@ -2,11 +2,11 @@ module Codeguessing
   class Console
     attr_reader :game, :scores
 
-    MESSAGE = YAML.load_file(File.absolute_path('data/messages.yml'))
+    MESSAGE = YAML.load_file(File.join(File.dirname(__FILE__), 'data/messages.yml'))
 
     def initialize
-      @path = File.absolute_path('data/scores.yml')
-      @scores = load(@path)
+      @path = File.join(File.dirname(__FILE__), 'data/scores.yml')
+      @scores = load(@path) || []
       @game = Game.new
     end
 
