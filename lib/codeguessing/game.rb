@@ -16,24 +16,33 @@ module Codeguessing
 
     def guess(code)
       @state = 'loose' unless natural?(use_attempt)
-      @state = 'win' if code == secret_code
+      if code == secret_code
+        @state = 'win'
+        return @answer = '+' * MAX_SIZE
+      end
       @answer = get_mark(code)
     end
 
     def get_mark(code)
-      return false unless valid?(code)
-      wrong_answers = {}
+      raise 'Invalid data' unless valid?(code)
       mark = ''
-      secret_code.each_char.with_index do |char, index|
-        if code[index] == char
-          mark += '+'
-          code[index] = '*'
-          wrong_answers.delete(char)
-        elsif code.include?(char)
-          wrong_answers[char] = '-'
-        end
+      secret_codes = secret_code.chars
+      codes = code.chars
+
+      secret_codes.each_with_index do |char, index|
+        next unless char == codes[index]
+        secret_codes[index] = nil
+        codes[index] = nil
+        mark += '+'
       end
-      mark += wrong_answers.values.join('')
+
+      secret_codes.compact.each_with_index do |char, index|
+        next unless code_index = codes.index(char)
+        codes[code_index] = nil
+        mark += '-'
+      end
+
+      mark
     end
 
     def hint
@@ -76,14 +85,11 @@ module Codeguessing
     private
 
     def natural?(number)
-      return false if number <= 0
-      true
+      number >= 0
     end
 
     def random
-      code = ''
-      MAX_SIZE.times { code += rand(1..6).to_s }
-      code
+      Array.new(MAX_SIZE) { rand(1..6) }.join
     end
 
     def use_attempt

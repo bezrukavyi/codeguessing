@@ -12,9 +12,7 @@ module Codeguessing
 
     def	rules
       puts MESSAGE['rules?']
-      unless confirm?
-        puts MESSAGE['rules'].join("\n")
-      end
+      puts MESSAGE['rules'].join("\n") unless confirm?
     end
 
     def go(knowed = false)

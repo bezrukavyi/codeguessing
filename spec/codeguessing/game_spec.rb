@@ -4,7 +4,6 @@ describe Codeguessing::Game do
   let(:game) { Codeguessing::Game.new }
   MAX_ATTEMPTS = Codeguessing::Game::MAX_ATTEMPTS
 
-
   describe '#start' do
     it 'saves secret code' do
       expect(game.secret_code).not_to be_empty
@@ -18,70 +17,87 @@ describe Codeguessing::Game do
   end
 
 
-  describe 'game process' do
+
+
+  describe '#guess' do
     before { game.secret_code = '1234' }
+    it 'when win' do
+      game.guess('1234')
+      expect(game.win?).to eq(true)
+    end
+    it 'when loose' do
+      (MAX_ATTEMPTS + 1).times { game.guess('2222') }
+      expect(game.win?).to eq(false)
+    end
+  end
 
-    describe '#guess' do
-      it 'when win' do
-        game.guess('1234')
-        expect(game.win?).to eq(true)
-      end
-      it 'when loose' do
-        MAX_ATTEMPTS.times { game.guess('8765') }
-        expect(game.win?).to eq(false)
+  def self.check_situations(situations, answer)
+    situations.each do |situation|
+      it "Code: #{situation[0]} | Guess: #{situation[1]}" do
+        game.secret_code = situation[0]
+        expect(game.get_mark(situation[1])).to eq(answer)
       end
     end
+  end
 
-    describe '#get_mark' do
-      it 'empty' do
-        expect(game.get_mark('5555')).to eq('')
-      end
-      it '-' do
-        expect(game.get_mark('5155')).to eq('-')
-      end
-      it '+' do
-        game.secret_code = '2222'
-        expect(game.get_mark('1234')).to eq('+')
-      end
-      it '--' do
-        game.secret_code = '5225'
-        expect(game.get_mark('2552')).to eq('--')
-      end
-      it '+-' do
-        expect(game.get_mark('3255')).to eq('+-')
-      end
-      it '++' do
-        game.secret_code = '4562'
-        expect(game.get_mark('5522')).to eq('++')
-      end
-      it '---' do
-        expect(game.get_mark('3112')).to eq('---')
-      end
-      it '+--' do
-        expect(game.get_mark('2124')).to eq('+--')
-      end
-      it '++-' do
-        expect(game.get_mark('1263')).to eq('++-')
-      end
-      it '+++' do
-        game.secret_code = '1262'
-        expect(game.get_mark('1261')).to eq('+++')
-      end
-      it '----' do
-        expect(game.get_mark('4321')).to eq('----')
-      end
-      it '+---' do
-        expect(game.get_mark('3241')).to eq('+---')
-      end
-      it '++--' do
-        game.secret_code = '2525'
-        expect(game.get_mark('2552')).to eq('++--')
-      end
-      it '++++' do
-        expect(game.get_mark('1234')).to eq('++++')
-      end
+  describe '#get_mark' do
+    context 'Empty' do
+      situations = [ ['1234', '5555'], ['1111', '2222'] ]
+      check_situations(situations, '')
     end
-
+    context '-' do
+      situations = [ ['1234', '5155'], ['3111', '1222'] ]
+      check_situations(situations, '-')
+    end
+    context '+' do
+      situations = [ ['5554', '1234'], ['1112', '2222'] ]
+      check_situations(situations, '+')
+    end
+    context '--' do
+      situations = [ ['2332', '3113'], ['1221', '2332'], ['2424', '3232'] ]
+      check_situations(situations, '--')
+    end
+    context '+-' do
+      situations = [ ['1234', '3255'], ['1132', '4143'] ]
+      check_situations(situations, '+-')
+    end
+    context '++' do
+      situations = [ ['4562', '5522'], ['3223', '4224'], ['2324', '4524'] ]
+      check_situations(situations, '++')
+    end
+    context '---' do
+      situations = [ ['1234', '4325'], ['2323', '3234'], ['1323', '3131'], ['3131', '1323'] ]
+      check_situations(situations, '---')
+    end
+    context '+--' do
+      situations = [ ['1234', '2124'], ['1234', '2124'], ['2331', '3233'], ['4131','2341'] ]
+      check_situations(situations, '+--')
+    end
+    context '++-' do
+      situations = [ ['1234', '1263'], ['2632', '2352'], ['5231','2331'] ]
+      check_situations(situations, '++-')
+    end
+    context '+++' do
+      situations = [ ['1262', '1261'], ['3323', '3363'] ]
+      check_situations(situations, '+++')
+    end
+    context '----' do
+      situations = [ ['1234', '4321'], ['5225', '2552'], ['5533','3355'] ]
+      check_situations(situations, '----')
+    end
+    context '+---' do
+      situations = [ ['1234', '3241'], ['3243', '3324'] ]
+      check_situations(situations, '+---')
+    end
+    context '++--' do
+      situations = [ ['2525', '2552'], ['2525', '2552'], ['2422', '2242'] ]
+      check_situations(situations, '++--')
+    end
+    it '++++' do
+      game.secret_code = '3243'
+      game.get_mark('3324')
+      expect(true).to eq(true)
+    end
   end
 
   context '#valid?' do
