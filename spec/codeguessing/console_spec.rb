@@ -3,7 +3,6 @@ require 'yaml'
 require 'colorize'
 
 describe Codeguessing::Console do
-  subject { Codeguessing::Console.new }
   let(:game) { subject.game }
   MESSAGE = Codeguessing::Console::MESSAGE
 

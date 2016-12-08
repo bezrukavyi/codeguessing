@@ -1,38 +1,37 @@
 require 'spec_helper'
 
 describe Codeguessing::Game do
-  let(:game) { Codeguessing::Game.new }
   MAX_ATTEMPTS = Codeguessing::Game::MAX_ATTEMPTS
 
   describe '#start' do
     it 'saves secret code' do
-      expect(game.secret_code).not_to be_empty
+      expect(subject.secret_code).not_to be_empty
     end
     it 'saves 4 numbers secret code' do
-      expect(game.secret_code.size).to eq(4)
+      expect(subject.secret_code.size).to eq(4)
     end
     it 'saves secret code with numbers from 1 to 6' do
-      expect(game.secret_code).to match(/[1-6]+/)
+      expect(subject.secret_code).to match(/[1-6]+/)
     end
   end
 
   describe '#guess' do
-    before { game.secret_code = '1234' }
+    before { subject.secret_code = '1234' }
     it 'when win' do
-      game.guess('1234')
-      expect(game.win?).to eq(true)
+      subject.guess('1234')
+      expect(subject.win?).to eq(true)
     end
     it 'when loose' do
-      MAX_ATTEMPTS.times { game.guess('2222') }
-      expect(game.win?).to eq(false)
+      MAX_ATTEMPTS.times { subject.guess('2222') }
+      expect(subject.win?).to eq(false)
     end
   end
 
   def self.check_situations(situations, answer)
     situations.each do |situation|
       it "Code: #{situation[0]} | Guess: #{situation[1]}" do
-        game.secret_code = situation[0]
-        expect(game.get_mark(situation[1])).to eq(answer)
+        subject.secret_code = situation[0]
+        expect(subject.get_mark(situation[1])).to eq(answer)
       end
     end
   end
@@ -91,40 +90,40 @@ describe Codeguessing::Game do
       check_situations(situations, '++--')
     end
     it '++++' do
-      game.secret_code = '1234'
-      expect(game.get_mark('1234')).to eq('++++')
+      subject.secret_code = '1234'
+      expect(subject.get_mark('1234')).to eq('++++')
     end
   end
 
   context '#valid?' do
     it 'when invalid' do
-      expect(game.valid?('123')).to eq(false)
+      expect(subject.valid?('123')).to eq(false)
     end
     it 'when valid' do
-      expect(game.valid?('1234')).to eq(true)
+      expect(subject.valid?('1234')).to eq(true)
     end
   end
 
   describe '#attempt' do
     it 'attempt limit' do
-      expect(game.attempts).to eq(MAX_ATTEMPTS)
+      expect(subject.attempts).to eq(MAX_ATTEMPTS)
     end
     it 'attempt balance' do
-      2.times { game.guess('1235') }
-      expect(game.attempts).to eq(MAX_ATTEMPTS - 2)
+      2.times { subject.guess('1235') }
+      expect(subject.attempts).to eq(MAX_ATTEMPTS - 2)
     end
   end
 
   describe '#hint' do
     it 'use hint' do
-      hint = game.hint
+      hint = subject.hint
       hint.each_char.with_index do |char, index|
-        expect(game.secret_code[index]).to eq(char) if char != '*'
+        expect(subject.secret_code[index]).to eq(char) if char != '*'
       end
     end
     it 'when hint not available' do
-      3.times { game.hint }
-      expect(game.hint).to eq('')
+      3.times { subject.hint }
+      expect(subject.hint).to eq('')
     end
   end
 end
