@@ -78,8 +78,7 @@ module Codeguessing
     end
 
     def valid?(code)
-      return true if code =~ /^[1-6]{#{MAX_SIZE}}$/s
-      false
+      code =~ /^[1-6]{#{MAX_SIZE}}$/s ? true : false
     end
 
     private
