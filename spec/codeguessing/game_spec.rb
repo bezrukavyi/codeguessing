@@ -91,9 +91,8 @@ describe Codeguessing::Game do
       check_situations(situations, '++--')
     end
     it '++++' do
-      game.secret_code = '3243'
-      game.get_mark('3324')
-      expect(true).to eq(true)
+      game.secret_code = '1234'
+      expect(game.get_mark('1234')).to eq('++++')
     end
   end
 
