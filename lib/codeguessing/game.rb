@@ -31,8 +31,7 @@ module Codeguessing
 
       secret_codes.each_with_index do |char, index|
         next unless char == codes[index]
-        secret_codes[index] = nil
-        codes[index] = nil
+        secret_codes[index], codes[index] = nil
         mark += '+'
       end
 
