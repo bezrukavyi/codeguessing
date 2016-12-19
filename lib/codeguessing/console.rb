@@ -31,19 +31,14 @@ module Codeguessing
         puts game.hint
         return go(true)
       end
-      if game.valid?(action)
-        puts game.guess(action)
-      else
-        puts MESSAGE['invalid_data']
-      end
+      puts game.valid?(action) ? game.guess(action) : MESSAGE['invalid_data']
       go(true)
     end
 
     private
 
     def confirm?(action = gets.chomp)
-      return true if action.downcase == 'y'
-      false
+      action.downcase == 'y'
     end
 
     def load(path)
@@ -85,10 +80,15 @@ module Codeguessing
         @game = Game.new
         return go(true)
       else
-        puts MESSAGE['scores_line']['start']
-        p scores
-        puts MESSAGE['scores_line']['end']
+        puts_with_line(scores)
       end
     end
+
+    def puts_with_line(message)
+      puts MESSAGE['scores_line']['start']
+      p message
+      puts MESSAGE['scores_line']['end']
+    end
+
   end
 end
