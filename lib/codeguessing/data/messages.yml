@@ -1,0 +1,19 @@
+rules:
+  - "-----------------Rules!----------------------"
+  - "You need guess secret code. This four-digit number with symbols from 1 to 6"
+  - "You have 5 attempt(s) and 2 hint(s)"
+  - "If you want get hint write 'hint'"
+  - '---------------------------------------------'
+rules?: "Do you know rules? (Y/N)"
+again?: "Do you want start again? (Y/N)"
+save?: "Do you want save result? (Y/N)"
+not_saved: "Maybe next time"
+set_name: "Write your name"
+invalid_data: "Invalid data"
+cant_save: "You cant save game"
+loose_code: "Secret code was"
+scores_line:
+  start: "-----------Scores----------"
+  end: "---------------------------"
+loose: "You loose!"
+win: "You win!"
